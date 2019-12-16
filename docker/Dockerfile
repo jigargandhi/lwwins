@@ -13,6 +13,6 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-RUN go build -o main .
+RUN go generate && go build -o main .
 
 ENTRYPOINT ["./main"]

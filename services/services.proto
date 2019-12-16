@@ -1,0 +1,10 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+service Writer {
+    rpc Update (SetValue) returns (google.protobuf.Empty);
+}
+
+message SetValue {
+    int32 value = 1;
+}
