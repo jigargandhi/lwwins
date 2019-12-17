@@ -64,23 +64,75 @@ func (m *SetValue) GetValue() int32 {
 	return 0
 }
 
+type MergeRequest struct {
+	Timestamp            int64    `protobuf:"varint,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Value                int32    `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MergeRequest) Reset()         { *m = MergeRequest{} }
+func (m *MergeRequest) String() string { return proto.CompactTextString(m) }
+func (*MergeRequest) ProtoMessage()    {}
+func (*MergeRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8e16ccb8c5307b32, []int{1}
+}
+
+func (m *MergeRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MergeRequest.Unmarshal(m, b)
+}
+func (m *MergeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MergeRequest.Marshal(b, m, deterministic)
+}
+func (m *MergeRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MergeRequest.Merge(m, src)
+}
+func (m *MergeRequest) XXX_Size() int {
+	return xxx_messageInfo_MergeRequest.Size(m)
+}
+func (m *MergeRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MergeRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MergeRequest proto.InternalMessageInfo
+
+func (m *MergeRequest) GetTimestamp() int64 {
+	if m != nil {
+		return m.Timestamp
+	}
+	return 0
+}
+
+func (m *MergeRequest) GetValue() int32 {
+	if m != nil {
+		return m.Value
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*SetValue)(nil), "SetValue")
+	proto.RegisterType((*MergeRequest)(nil), "MergeRequest")
 }
 
 func init() { proto.RegisterFile("services.proto", fileDescriptor_8e16ccb8c5307b32) }
 
 var fileDescriptor_8e16ccb8c5307b32 = []byte{
-	// 140 bytes of a gzipped FileDescriptorProto
+	// 203 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0x4e, 0x2d, 0x2a,
 	0xcb, 0x4c, 0x4e, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x97, 0x92, 0x4e, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x07, 0xf3, 0x92, 0x4a, 0xd3, 0xf4, 0x53, 0x73, 0x0b, 0x4a, 0x2a, 0x21, 0x92,
 	0x4a, 0x0a, 0x5c, 0x1c, 0xc1, 0xa9, 0x25, 0x61, 0x89, 0x39, 0xa5, 0xa9, 0x42, 0x22, 0x5c, 0xac,
-	0x65, 0x20, 0x86, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0x6b, 0x10, 0x84, 0x63, 0x94, 0xc8, 0xc5, 0x16,
-	0x5e, 0x94, 0x59, 0x92, 0x5a, 0x24, 0xa4, 0xcd, 0xc5, 0x16, 0x5a, 0x90, 0x92, 0x58, 0x92, 0x2a,
-	0xc4, 0xa9, 0x07, 0xd3, 0x24, 0x25, 0xa6, 0x07, 0x31, 0x5e, 0x0f, 0x66, 0xbc, 0x9e, 0x2b, 0xc8,
-	0x78, 0x21, 0x2d, 0x2e, 0xd6, 0xd0, 0x02, 0xe2, 0xd4, 0x26, 0xb1, 0x81, 0xf9, 0xc6, 0x80, 0x00,
-	0x00, 0x00, 0xff, 0xff, 0xf8, 0xe9, 0xf6, 0x6d, 0xba, 0x00, 0x00, 0x00,
+	0x65, 0x20, 0x86, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0x6b, 0x10, 0x84, 0xa3, 0xe4, 0xc4, 0xc5, 0xe3,
+	0x9b, 0x5a, 0x94, 0x9e, 0x1a, 0x94, 0x5a, 0x58, 0x9a, 0x5a, 0x5c, 0x22, 0x24, 0xc3, 0xc5, 0x59,
+	0x92, 0x99, 0x9b, 0x5a, 0x5c, 0x92, 0x98, 0x5b, 0x00, 0x56, 0xc9, 0x1c, 0x84, 0x10, 0x40, 0x98,
+	0xc1, 0x84, 0x64, 0x86, 0xd1, 0x44, 0x46, 0x2e, 0xb6, 0xf0, 0xa2, 0xcc, 0x92, 0xd4, 0x22, 0x21,
+	0x6d, 0x2e, 0xb6, 0xd0, 0x82, 0x94, 0xc4, 0x92, 0x54, 0x21, 0x4e, 0x3d, 0x98, 0xcd, 0x52, 0x62,
+	0x7a, 0x10, 0x37, 0xea, 0xc1, 0xdc, 0xa8, 0xe7, 0x0a, 0x72, 0xa3, 0x90, 0x16, 0x17, 0x6b, 0x60,
+	0x69, 0x6a, 0x51, 0xa5, 0x10, 0x0e, 0x05, 0x52, 0x08, 0x33, 0x84, 0xf4, 0xb8, 0x58, 0xc1, 0xee,
+	0x14, 0xe2, 0xd5, 0x43, 0x76, 0x2f, 0x2e, 0xb3, 0x93, 0xd8, 0xc0, 0x7c, 0x63, 0x40, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0xdd, 0x3b, 0xa3, 0x9c, 0x2f, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -96,7 +148,8 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type WriterClient interface {
 	Update(ctx context.Context, in *SetValue, opts ...grpc.CallOption) (*empty.Empty, error)
-	Upate(ctx context.Context, in *SetValue, opts ...grpc.CallOption) (*empty.Empty, error)
+	Query(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*SetValue, error)
+	Merge(ctx context.Context, in *MergeRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type writerClient struct {
@@ -116,9 +169,18 @@ func (c *writerClient) Update(ctx context.Context, in *SetValue, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *writerClient) Upate(ctx context.Context, in *SetValue, opts ...grpc.CallOption) (*empty.Empty, error) {
+func (c *writerClient) Query(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*SetValue, error) {
+	out := new(SetValue)
+	err := c.cc.Invoke(ctx, "/Writer/Query", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *writerClient) Merge(ctx context.Context, in *MergeRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := c.cc.Invoke(ctx, "/Writer/Upate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/Writer/Merge", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -128,7 +190,8 @@ func (c *writerClient) Upate(ctx context.Context, in *SetValue, opts ...grpc.Cal
 // WriterServer is the server API for Writer service.
 type WriterServer interface {
 	Update(context.Context, *SetValue) (*empty.Empty, error)
-	Upate(context.Context, *SetValue) (*empty.Empty, error)
+	Query(context.Context, *empty.Empty) (*SetValue, error)
+	Merge(context.Context, *MergeRequest) (*empty.Empty, error)
 }
 
 // UnimplementedWriterServer can be embedded to have forward compatible implementations.
@@ -138,8 +201,11 @@ type UnimplementedWriterServer struct {
 func (*UnimplementedWriterServer) Update(ctx context.Context, req *SetValue) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (*UnimplementedWriterServer) Upate(ctx context.Context, req *SetValue) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Upate not implemented")
+func (*UnimplementedWriterServer) Query(ctx context.Context, req *empty.Empty) (*SetValue, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
+}
+func (*UnimplementedWriterServer) Merge(ctx context.Context, req *MergeRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Merge not implemented")
 }
 
 func RegisterWriterServer(s *grpc.Server, srv WriterServer) {
@@ -164,20 +230,38 @@ func _Writer_Update_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Writer_Upate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetValue)
+func _Writer_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(WriterServer).Upate(ctx, in)
+		return srv.(WriterServer).Query(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Writer/Upate",
+		FullMethod: "/Writer/Query",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WriterServer).Upate(ctx, req.(*SetValue))
+		return srv.(WriterServer).Query(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Writer_Merge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MergeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WriterServer).Merge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Writer/Merge",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WriterServer).Merge(ctx, req.(*MergeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -191,8 +275,12 @@ var _Writer_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Writer_Update_Handler,
 		},
 		{
-			MethodName: "Upate",
-			Handler:    _Writer_Upate_Handler,
+			MethodName: "Query",
+			Handler:    _Writer_Query_Handler,
+		},
+		{
+			MethodName: "Merge",
+			Handler:    _Writer_Merge_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

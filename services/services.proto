@@ -3,8 +3,15 @@ import "google/protobuf/empty.proto";
 
 service Writer {
     rpc Update (SetValue) returns (google.protobuf.Empty);
+    rpc Query (google.protobuf.Empty) returns (SetValue);
+    rpc Merge (MergeRequest) returns (google.protobuf.Empty);
 }
 
 message SetValue {
     int32 value = 1;
+}
+
+message MergeRequest {
+    int64 timestamp = 1;
+    int32 value = 2;
 }

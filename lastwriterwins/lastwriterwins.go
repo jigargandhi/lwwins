@@ -11,6 +11,10 @@ type Payload struct {
 	time  int64
 }
 
+func New(value int) *Payload {
+	return &Payload{value: value, time: time.Now().UnixNano()}
+}
+
 func (payload *Payload) Update(val int) {
 	payload.value = val
 	payload.time = time.Now().UnixNano()
