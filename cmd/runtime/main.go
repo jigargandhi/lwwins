@@ -2,12 +2,16 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"net"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/jigargandhi/lwwins/address"
+	"github.com/jigargandhi/lwwins/services"
 	log "github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -21,6 +25,14 @@ func main() {
 	signal.Notify(stop, syscall.SIGTERM, os.Interrupt)
 
 	register.Start()
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 3334))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	services.RegisterWriterServer(grpcServer, &services.Server{})
+	// determine whether to use TLS
+	grpcServer.Serve(lis)
 	log.Info("Starting lwwins service")
 	<-stop
 }

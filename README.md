@@ -3,7 +3,7 @@
 This go repo demonstrates a set CvRDT where Last writer wins
 ## Build
 
-```docker build -t lwwins:dev -f docker/Dockerfile ```
+```./build.sh```
 
 ## Run
 
