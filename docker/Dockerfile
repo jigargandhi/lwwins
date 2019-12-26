@@ -12,7 +12,9 @@ RUN go mod download
 # Copy the source from the current directory to the Working Directory inside the container
 COPY . .
 
-# Build the Go app
-RUN go generate && go build -o main .
+# Build the Go app; protobuf compilation is done outside
+RUN go build -o dist/lwwinsruntime cmd/runtime/main.go
 
-ENTRYPOINT ["./main"]
+EXPOSE 3334
+
+ENTRYPOINT ["./dist/lwwinsruntime"]
