@@ -29,8 +29,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+
 	grpcServer := grpc.NewServer()
-	services.RegisterWriterServer(grpcServer, &services.Server{})
+	serverImpl := services.Make(0, register)
+	services.RegisterWriterServer(grpcServer, serverImpl)
 	// determine whether to use TLS
 	grpcServer.Serve(lis)
 	log.Info("Starting lwwins service")

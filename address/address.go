@@ -44,13 +44,12 @@ func addressListener(address *Registrar) {
 	defer connection.Close()
 	for {
 		buffer := make([]byte, 1024)
-		_, _, err := connection.ReadFrom(buffer)
+		n, _, err := connection.ReadFrom(buffer)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		stringdata := string(buffer)
+		stringdata := string(buffer[0:n])
 		parts := strings.Split(stringdata, "|")
-		//fmt.Println("Received data ", stringdata)
 		if len(parts) != 3 {
 			continue
 		}
@@ -65,7 +64,6 @@ func addressListener(address *Registrar) {
 		if parts[1] != address.token {
 			continue
 		}
-		//fmt.Println(fmt.Sprintf("Found node with Id %d and address %s", id, parts[2]))
 		address.address[id] = parts[2]
 	}
 }
@@ -107,4 +105,12 @@ func getLocalIP() string {
 		}
 	}
 	return localIP
+}
+
+func (address *Registrar) ForAddress(handler func(value string)) {
+	for _, value := range address.address {
+		if value != getLocalIP() {
+			go handler(fmt.Sprintf("%s:3334", value))
+		}
+	}
 }

@@ -13,6 +13,8 @@ import (
 
 func main() {
 	serverAddr := flag.String("server_addr", "0.0.0.0:3333", "")
+	queryOnly := flag.Bool("query_only", false, "Query only when sets only queries does not update")
+	value := flag.Int("value", 4, "provides a value")
 	flag.Parse()
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithInsecure())
@@ -27,7 +29,9 @@ func main() {
 	client := services.NewWriterClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
-	_, err = client.Update(ctx, &services.SetValue{Value: 3})
+	if !*queryOnly {
+		_, err = client.Update(ctx, &services.SetValue{Value: (int32)(*value)})
+	}
 	val, _ := client.Query(ctx, &empty.Empty{})
 	log.Printf("Value %d", val)
 	if err != nil {
