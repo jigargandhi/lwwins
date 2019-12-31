@@ -1,32 +1,37 @@
 package lastwriterwins
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
-	"time"
+
+	"github.com/jigargandhi/lwwins/clock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNotNilPayloadCreated(t *testing.T) {
-	payload := New(10)
+	var loClock clock.Loclock
+	payload := New(&loClock, 10)
 	assert.NotNil(t, payload)
 }
 
 func TestUpdate(t *testing.T) {
-	payload := New(1)
+	var loClock clock.Loclock
+	payload := New(&loClock, 1)
 	payload.Update(2)
 	assert.Equal(t, 2, payload.value)
 }
 
 func TestValue(t *testing.T) {
-	payload := New(1)
+	var loClock clock.Loclock
+	payload := New(&loClock, 1)
 	val := payload.Value()
 	assert.Equal(t, 1, val)
 }
 
 func TestMerge_WhenOldValue(t *testing.T) {
-	payload := New(1)
-	d, _ := time.ParseDuration("-1s")
-	payload.time = time.Now().Add(d).UnixNano()
-	payload.Merge(3, time.Now().UnixNano())
+	var loClock clock.Loclock
+	payload := New(&loClock, 1)
+	loClock.Tick()
+	loClock.Tick()
+	payload.Merge(3, 4)
 	assert.Equal(t, 3, payload.value)
 }

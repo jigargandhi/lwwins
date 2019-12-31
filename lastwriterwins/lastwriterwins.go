@@ -2,34 +2,37 @@ package lastwriterwins
 
 import (
 	"fmt"
-	"time"
+
+	"github.com/jigargandhi/lwwins/clock"
 )
 
 // Payload for the writer
 type Payload struct {
 	value int
-	time  int64
+	clock *clock.Loclock
 }
 
-func New(value int) *Payload {
-	return &Payload{value: value, time: time.Now().UnixNano()}
+// New Initializes a new payload
+func New(clock *clock.Loclock, value int) *Payload {
+	return &Payload{value: value, clock: clock}
 }
 
-// Updates the value to a new one
+// Update assigns new value to the payload
 func (payload *Payload) Update(val int) {
 	payload.value = val
-	payload.time = time.Now().UnixNano()
+	payload.clock.Tick()
 }
 
+// Value returns current register value
 func (payload *Payload) Value() int {
 	return payload.value
 }
 
-func (payload *Payload) Merge(remoteValue int, time int64) {
-	if payload.time < time {
+// Merge merges existing value with new value based on the logical clock
+func (payload *Payload) Merge(remoteValue int, time uint64) {
+	if payload.clock.Get() < time {
 		payload.value = remoteValue
 	} else {
 		fmt.Println("Merge failed ")
 	}
-
 }

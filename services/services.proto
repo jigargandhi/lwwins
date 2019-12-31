@@ -5,6 +5,7 @@ service Writer {
     rpc Update (SetValue) returns (google.protobuf.Empty);
     rpc Query (google.protobuf.Empty) returns (SetValue);
     rpc Merge (MergeRequest) returns (google.protobuf.Empty);
+    rpc Sync (SyncRequest) returns (google.protobuf.Empty);
 }
 
 message SetValue {
@@ -12,6 +13,10 @@ message SetValue {
 }
 
 message MergeRequest {
-    int64 timestamp = 1;
+    uint64 timestamp = 1;
     int32 value = 2;
+}
+
+message SyncRequest {
+    uint64 timestamp = 1;
 }

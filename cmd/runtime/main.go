@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/jigargandhi/lwwins/address"
+	"github.com/jigargandhi/lwwins/clock"
 	"github.com/jigargandhi/lwwins/services"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -18,6 +19,8 @@ func main() {
 	nodeid := flag.Int("id", 1, "nodeid")
 	token := flag.String("token", "", "")
 	flag.Parse()
+
+	var clock clock.Loclock
 
 	register := address.Make(*nodeid, *token)
 
@@ -31,7 +34,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	serverImpl := services.Make(0, register)
+	serverImpl := services.Make(&clock, 0, register)
 	services.RegisterWriterServer(grpcServer, serverImpl)
 	// determine whether to use TLS
 	grpcServer.Serve(lis)
