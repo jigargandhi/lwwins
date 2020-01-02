@@ -29,11 +29,10 @@ func Make(clock *clock.Loclock, val int, address *address.Registrar) *Server {
 	holder.address = address
 	holder.clock = clock
 	go newAddressReceived(address.NewAddress, clock)
-	//server.pa
 	return holder
 }
 
-func newAddressReceived(newAddress <-chan string, clock *clock.Loclock) {
+func newAddressReceived(newAddress chan string, clock *clock.Loclock) {
 	for address := range newAddress {
 		log.Debugf("Received %s", address)
 		go syncTime(address, clock)
@@ -112,7 +111,7 @@ func syncTime(addr string, clock *clock.Loclock) {
 	addr = fmt.Sprintf("%s:3334", addr)
 	conn, err := grpc.Dial(addr, opt...)
 	if err != nil {
-
+		log.Debugf("received error while syncing time %v", err)
 	}
 	defer conn.Close()
 	client := NewWriterClient(conn)

@@ -38,8 +38,6 @@ func (address *Registrar) Start() {
 }
 
 func addressListener(address *Registrar) {
-	//localAddress, _ := net.ResolveUDPAddr("udp", "3333")
-	//connection, err := net.ListenUDP("udp", localAddress)
 	connection, err := net.ListenPacket("udp", "0.0.0.0:3333")
 	if err != nil {
 		fmt.Println(err.Error())
@@ -53,7 +51,7 @@ func addressListener(address *Registrar) {
 		}
 		// addressData is of the format id|address|secretToken
 		addressData := string(buffer[0:n])
-		handleAddress(addressData, address)
+		go handleAddress(addressData, address)
 	}
 }
 
@@ -78,6 +76,7 @@ func handleAddress(addressData string, address *Registrar) {
 		return
 	}
 	val, ok := address.address[id]
+	log.Infof("val: %v, ok: %v", val, ok)
 	notify := false
 	if ok {
 		if val != parts[2] {
@@ -89,7 +88,7 @@ func handleAddress(addressData string, address *Registrar) {
 		notify = true
 	}
 	if notify {
-		log.Debugf("Added new address %v", parts[2])
+		log.Infof("Added new address %v", parts[2])
 		address.NewAddress <- parts[2]
 	}
 }
