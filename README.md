@@ -26,3 +26,4 @@ Run command line
 ## Todo
 - Use SSL Certificates for identity instead of a secret
 - When a new server is added server only time is synced value is not
+- When a message is received timestamp should also be incremented (testing pending)

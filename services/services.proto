@@ -3,7 +3,7 @@ import "google/protobuf/empty.proto";
 
 service Writer {
     rpc Update (SetValue) returns (google.protobuf.Empty);
-    rpc Query (google.protobuf.Empty) returns (SetValue);
+    rpc Query (google.protobuf.Empty) returns (MergeRequest);
     rpc Merge (MergeRequest) returns (google.protobuf.Empty);
     rpc Sync (SyncRequest) returns (google.protobuf.Empty);
 }

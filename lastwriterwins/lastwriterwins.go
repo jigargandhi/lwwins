@@ -20,7 +20,6 @@ func New(clock *clock.Loclock, value int) *Payload {
 // Update assigns new value to the payload
 func (payload *Payload) Update(val int) {
 	payload.value = val
-	payload.clock.Tick()
 }
 
 // Value returns current register value

@@ -43,23 +43,26 @@ func newAddressReceived(newAddress chan string, clock *clock.Loclock) {
 func (server *Server) Update(context context.Context, value *SetValue) (*empty.Empty, error) {
 	var val int
 	val = (int)(value.Value)
+	server.clock.Tick()
 	server.payload.Update(val)
-	log.Printf("A new value %v received updating all", val)
+	log.Debugf("A new value %v received updating all", val)
 	notifyAll(server.address, val, server.clock)
 	return &empty.Empty{}, nil
 }
 
 // Query is interface implementation
-func (server *Server) Query(context context.Context, empty *empty.Empty) (*SetValue, error) {
+func (server *Server) Query(context context.Context, empty *empty.Empty) (*MergeRequest, error) {
 	val := server.payload.Value()
-	return &SetValue{Value: (int32)(val)}, nil
+	return &MergeRequest{Value: (int32)(val), Timestamp: server.clock.Get()}, nil
 
 }
 
 // Merge dones merge
 func (server *Server) Merge(context context.Context, request *MergeRequest) (*empty.Empty, error) {
 	val := (int)(request.Value)
+	server.clock.Tick()
 	server.payload.Merge(val, request.Timestamp)
+	server.clock.Update(request.Timestamp)
 	return &empty.Empty{}, nil
 }
 

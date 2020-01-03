@@ -33,7 +33,7 @@ func main() {
 		_, err = client.Update(ctx, &services.SetValue{Value: (int32)(*value)})
 	}
 	val, _ := client.Query(ctx, &empty.Empty{})
-	log.Printf("Value %d", val)
+	log.Printf("Value %d; At time: %d", val.Value, val.Timestamp)
 	if err != nil {
 		log.Fatalf("%v has error %v", client, err)
 	}
