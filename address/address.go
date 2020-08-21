@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -15,20 +14,20 @@ const broadcastAddr = "255.255.255.255:3333"
 
 // Registrar service's structure
 type Registrar struct {
-	id              int
+	name            string
 	token           string
-	address         map[int]string
+	address         map[string]string
 	listenerAddress string
 	NewAddress      chan string
 }
 
 // NewRegistrar creates a new instance of registrar service
 // and starts address listener and speaker
-func NewRegistrar(id int, token string) *Registrar {
+func NewRegistrar(nodeName string, token string) *Registrar {
 	address := Registrar{}
-	address.id = id
+	address.name = nodeName
 	address.token = token
-	address.address = make(map[int]string)
+	address.address = make(map[string]string)
 	address.NewAddress = make(chan string)
 	address.listenerAddress = "0.0.0.0:3333"
 	go address.addressListener()
@@ -49,46 +48,43 @@ func (address *Registrar) addressListener() {
 			log.Printf("Error reading from buffer %v", err.Error())
 		}
 		// addressData is of the format id|address|secretToken
-		addressData := string(buffer[0:n])
-		go address.handleAddress(addressData)
+		go address.handleAddress(buffer[0:n])
 	}
 }
 
-func (address *Registrar) handleAddress(addressData string) {
+func (address *Registrar) handleAddress(addressData []byte) {
 	log.Debug("Handling new address")
-	parts := strings.Split(addressData, "|")
-	if len(parts) != 3 {
+	addressParts, err := decrypt(address.token, addressData)
+	if err != nil {
 		return
 	}
-	id, error := strconv.Atoi(parts[0])
-	if error != nil {
-		log.Printf("Error occured while doing parsing Id from %v: %v ", addressData, error.Error())
+	parts := strings.Split(addressParts, "|")
+	if len(parts) != 2 {
 		return
 	}
-	if id == address.id {
+	name := parts[0]
+	remoteAddr := parts[1]
+	if name == address.name {
 		return
 	}
-	if parts[1] != address.token {
+	if parts[1] == getLocalIP() {
 		return
 	}
-	if parts[2] == getLocalIP() {
-		return
-	}
-	val, ok := address.address[id]
+	val, ok := address.address[name]
 
 	notify := false
 	if ok {
-		if val != parts[2] {
-			address.address[id] = parts[2]
+		if val != parts[1] {
+			address.address[name] = remoteAddr
 			notify = true
 		}
 	} else {
-		address.address[id] = parts[2]
+		address.address[name] = remoteAddr
 		notify = true
 	}
 	if notify {
-		log.Debugf("Added new address %v", parts[2])
-		address.NewAddress <- parts[2]
+		log.Debugf("Added new address %v", remoteAddr)
+		address.NewAddress <- remoteAddr
 	}
 }
 
@@ -106,8 +102,8 @@ func (address *Registrar) addressSpeaker() {
 }
 
 func (address *Registrar) serialize() []byte {
-	ser := fmt.Sprintf("%d|%s|%s", address.id, address.token, getLocalIP())
-	return []byte(ser)
+	ser := fmt.Sprintf("%s|%s", address.name, getLocalIP())
+	return encrypt(address.token, ser)
 }
 
 func getLocalIP() string {

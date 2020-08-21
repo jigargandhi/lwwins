@@ -80,8 +80,7 @@ func (server *Server) new() WriterServer {
 
 func notifyAll(address *address.Registrar, val int, clock *clock.Loclock) {
 	var opt []grpc.DialOption
-	opt = append(opt, grpc.WithInsecure())
-	opt = append(opt, grpc.WithBlock())
+	opt = append(opt, grpc.WithInsecure(), grpc.WithBlock())
 
 	address.ForAddress(func(addr string) {
 		log.Printf("sending value %v to address %v", val, addr)
@@ -109,8 +108,7 @@ func notify(opt []grpc.DialOption, addr string, val int, instance uint64) {
 func syncTime(addr string, clock *clock.Loclock) {
 	log.Debugf("Sending sync request")
 	var opt []grpc.DialOption
-	opt = append(opt, grpc.WithInsecure())
-	opt = append(opt, grpc.WithBlock())
+	opt = append(opt, grpc.WithInsecure(), grpc.WithBlock())
 	addr = fmt.Sprintf("%s:3334", addr)
 	conn, err := grpc.Dial(addr, opt...)
 	if err != nil {

@@ -4,11 +4,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/jigargandhi/lwwins/services"
 	"google.golang.org/grpc"
-	"log"
-	"time"
 )
 
 func main() {
@@ -17,8 +18,7 @@ func main() {
 	value := flag.Int("value", 4, "provides a value")
 	flag.Parse()
 	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithInsecure())
-	opts = append(opts, grpc.WithBlock())
+	opts = append(opts, grpc.WithInsecure(), grpc.WithBlock())
 	fmt.Println(*serverAddr)
 	conn, err := grpc.Dial(*serverAddr, opts...)
 	if err != nil {

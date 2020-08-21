@@ -15,10 +15,24 @@ import (
 	"google.golang.org/grpc"
 )
 
+func getHostnameOrDefault() string {
+	name, err := os.Hostname()
+	if err == nil {
+		return name
+	}
+
+	return "node"
+}
+
 func main() {
-	nodeid := flag.Int("id", 1, "nodeid")
-	token := flag.String("token", "", "")
+	os.Hostname()
+	nodeid := flag.String("node", getHostnameOrDefault(), "node name defaulted to hostname")
+	token := flag.String("key", "", "")
 	flag.Parse()
+
+	if *token == "" {
+		log.Fatal("Key is required")
+	}
 
 	clock := &clock.Loclock{}
 
@@ -27,7 +41,7 @@ func main() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGTERM, os.Interrupt)
 
-	grpc_listener, err := net.Listen("tcp", fmt.Sprintf(":%d", 3334))
+	grpcListener, err := net.Listen("tcp", fmt.Sprintf(":%d", 3334))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -36,7 +50,7 @@ func main() {
 	serverImpl := services.NewServer(clock, 0, registrar)
 	services.RegisterWriterServer(grpcServer, serverImpl)
 	// determine whether to use TLS
-	grpcServer.Serve(grpc_listener)
+	grpcServer.Serve(grpcListener)
 	log.Info("Starting lwwins service")
 	<-stop
 }
