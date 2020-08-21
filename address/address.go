@@ -15,31 +15,29 @@ const broadcastAddr = "255.255.255.255:3333"
 
 // Registrar service's structure
 type Registrar struct {
-	id         int
-	token      string
-	address    map[int]string
-	NewAddress chan string
+	id              int
+	token           string
+	address         map[int]string
+	listenerAddress string
+	NewAddress      chan string
 }
 
 // NewRegistrar creates a new instance of registrar service
+// and starts address listener and speaker
 func NewRegistrar(id int, token string) *Registrar {
 	address := Registrar{}
 	address.id = id
 	address.token = token
 	address.address = make(map[int]string)
 	address.NewAddress = make(chan string)
+	address.listenerAddress = "0.0.0.0:3333"
+	go address.addressListener()
+	go address.addressSpeaker()
 	return &address
 }
 
-// Start starts a broadcasting and receiving
-func (address *Registrar) Start() {
-	go addressListener(address)
-	go addressSpeaker(address)
-
-}
-
-func addressListener(address *Registrar) {
-	connection, err := net.ListenPacket("udp", "0.0.0.0:3333")
+func (address *Registrar) addressListener() {
+	connection, err := net.ListenPacket("udp", address.listenerAddress)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -52,11 +50,11 @@ func addressListener(address *Registrar) {
 		}
 		// addressData is of the format id|address|secretToken
 		addressData := string(buffer[0:n])
-		go handleAddress(addressData, address)
+		go address.handleAddress(addressData)
 	}
 }
 
-func handleAddress(addressData string, address *Registrar) {
+func (address *Registrar) handleAddress(addressData string) {
 	log.Debug("Handling new address")
 	parts := strings.Split(addressData, "|")
 	if len(parts) != 3 {
@@ -94,7 +92,7 @@ func handleAddress(addressData string, address *Registrar) {
 	}
 }
 
-func addressSpeaker(address *Registrar) {
+func (address *Registrar) addressSpeaker() {
 	connection, _ := net.Dial("udp", broadcastAddr)
 	defer connection.Close()
 	message := address.serialize()

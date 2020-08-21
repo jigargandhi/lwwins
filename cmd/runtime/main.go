@@ -20,24 +20,23 @@ func main() {
 	token := flag.String("token", "", "")
 	flag.Parse()
 
-	var clock clock.Loclock
+	clock := &clock.Loclock{}
 
 	registrar := address.NewRegistrar(*nodeid, *token)
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGTERM, os.Interrupt)
 
-	registrar.Start()
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 3334))
+	grpc_listener, err := net.Listen("tcp", fmt.Sprintf(":%d", 3334))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
 	grpcServer := grpc.NewServer()
-	serverImpl := services.NewServer(&clock, 0, registrar)
+	serverImpl := services.NewServer(clock, 0, registrar)
 	services.RegisterWriterServer(grpcServer, serverImpl)
 	// determine whether to use TLS
-	grpcServer.Serve(lis)
+	grpcServer.Serve(grpc_listener)
 	log.Info("Starting lwwins service")
 	<-stop
 }
