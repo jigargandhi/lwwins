@@ -2,12 +2,13 @@ package address
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"net"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const broadcastAddr = "255.255.255.255:3333"
@@ -20,8 +21,8 @@ type Registrar struct {
 	NewAddress chan string
 }
 
-// Make creates a new instance of registrar service
-func Make(id int, token string) *Registrar {
+// NewRegistrar creates a new instance of registrar service
+func NewRegistrar(id int, token string) *Registrar {
 	address := Registrar{}
 	address.id = id
 	address.token = token

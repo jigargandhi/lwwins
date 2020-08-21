@@ -22,19 +22,19 @@ func main() {
 
 	var clock clock.Loclock
 
-	register := address.Make(*nodeid, *token)
+	registrar := address.NewRegistrar(*nodeid, *token)
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGTERM, os.Interrupt)
 
-	register.Start()
+	registrar.Start()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 3334))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
 	grpcServer := grpc.NewServer()
-	serverImpl := services.Make(&clock, 0, register)
+	serverImpl := services.NewServer(&clock, 0, registrar)
 	services.RegisterWriterServer(grpcServer, serverImpl)
 	// determine whether to use TLS
 	grpcServer.Serve(lis)

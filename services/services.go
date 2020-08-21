@@ -22,8 +22,8 @@ type Server struct {
 	clock   *clock.Loclock
 }
 
-// Make creates a new instance of server
-func Make(clock *clock.Loclock, val int, address *address.Registrar) *Server {
+// NewServer creates a new instance of server
+func NewServer(clock *clock.Loclock, val int, address *address.Registrar) *Server {
 	holder := &Server{}
 	holder.payload = lastwriterwins.New(clock, val)
 	holder.address = address
